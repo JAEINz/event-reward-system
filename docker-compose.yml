@@ -1,0 +1,22 @@
+version: '3'
+services:
+  gateway:
+    build: ./apps/gateway
+    ports:
+      - "${GATEWAY_PORT}:3000"
+    env_file:
+      - ./.env
+
+  auth:
+    build: ./apps/auth
+    ports:
+      - "${AUTH_PORT}:3000"
+    env_file:
+      - ./.env
+
+  event:
+    build: ./apps/event
+    ports:
+      - "${EVENT_PORT}:3000"
+    env_file:
+      - ./.env
