@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
 
 @Schema({ timestamps: true })
-export class Event {
-  @Prop({ required: true })
+export class Events {
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true })
   userId: string;
 
   @Prop({ required: true })
@@ -23,9 +24,6 @@ export class Event {
   @Prop()
   conditionQuantity: number;
 
-  @Prop({ default: true })
-  isActive: boolean;
-
   @Prop()
   startDate: Date;
 
@@ -33,4 +31,6 @@ export class Event {
   endDate: Date;
 }
 
-export const EventSchema = SchemaFactory.createForClass(Event);
+export const EventSchema = SchemaFactory.createForClass(Events);
+
+export type EventDocument = Events & Document;

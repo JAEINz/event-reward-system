@@ -1,9 +1,9 @@
-import { RoleType } from '../enum';
+import { UserRoleType } from '../enum';
 
 export class JwtUserPayload {
   readonly userId!: number;
 
-  readonly role!: RoleType;
+  readonly role!: UserRoleType;
 }
 
 export class JwtUserRequestDto extends JwtUserPayload {
