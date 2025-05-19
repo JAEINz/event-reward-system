@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { Roles } from 'apps/gateway/libs/auth/decorator/roles.decorator';
 import { JwtAuthGuard } from 'apps/gateway/libs/auth/guard/jwt-auth.guard';
@@ -9,9 +17,15 @@ import {
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import { AddRewardRequestDto, ClaimRewardRequestDto } from '../dto';
+import {
+  AddRewardRequestDto,
+  ClaimRewardRequestDto,
+  GetAllRewardRequestHistoryListListRequestDto,
+  GetAllRewardRequestHistoryListListResponseDto,
+} from '../../../../libs/dto/reward.dto';
 import { JwtUserPayload } from 'apps/gateway/libs/dto';
 import { Request } from 'express';
 import { forwardHttpRequest } from 'apps/gateway/libs/util/http-service-wrapper';
@@ -66,5 +80,28 @@ export class RewardController {
     await forwardHttpRequest(observable);
 
     return { status: 'OK' };
+  }
+
+  @Get('list/all')
+  @Roles('AUDITOR', 'ADMIN')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: '[감사자, 운영자] 보상 요청 전체 리스트 조회 API',
+  })
+  @ApiOkResponse({ type: GetAllRewardRequestHistoryListListResponseDto })
+  async getEventList(
+    @Query() requestDto: GetAllRewardRequestHistoryListListRequestDto,
+  ) {
+    const { page, pageSize } = requestDto;
+    const observable = this.httpService.get(
+      `http://localhost:3002/reward/list/all?page=${page}&pageSize=${pageSize}`,
+    );
+
+    const response = await forwardHttpRequest(observable);
+
+    return GetAllRewardRequestHistoryListListResponseDto.of(
+      response.data.rewardList,
+      response.data.totalCount,
+    );
   }
 }

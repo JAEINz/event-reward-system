@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Events, EventDocument } from '../../../../../model/event.schema';
-import { EventStatus } from 'apps/gateway/libs/enum/event.enum';
+import { EventStatus } from 'apps/libs/enum/event.enum';
 
 @Injectable()
 export class EventRepository {
@@ -15,12 +15,12 @@ export class EventRepository {
 
     const [eventList, totalCount] = await Promise.all([
       this.eventModel
-        .find({ status: { $ne: 'DELETED' } })
+        .find()
         .skip(skip)
         .limit(pageSize)
         .populate('userId', 'email')
         .exec(),
-      this.eventModel.countDocuments({ status: { $ne: 'DELETED' } }).exec(),
+      this.eventModel.countDocuments().exec(),
     ]);
 
     return { eventList, totalCount };
@@ -34,7 +34,7 @@ export class EventRepository {
     endDate: string,
   ) {
     return this.eventModel.create({
-      userId,
+      userId: new Types.ObjectId(userId),
       title,
       status,
       startDate: new Date(startDate),

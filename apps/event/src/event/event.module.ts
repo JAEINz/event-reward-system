@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { EventSchema } from 'model/event.schema';
 import { Events } from '../../../../model/event.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UserSchema } from 'model/user.schema';
 
 @Module({
   imports: [
@@ -16,7 +17,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
       inject: [ConfigService],
     }),
-    MongooseModule.forFeature([{ name: Events.name, schema: EventSchema }]),
+    MongooseModule.forFeature([
+      { name: Events.name, schema: EventSchema },
+      { name: 'Users', schema: UserSchema },
+    ]),
   ],
   controllers: [EventController],
   providers: [EventService, EventRepository],

@@ -6,6 +6,9 @@ export class UserRewardRequestHistory {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true })
   userId: string;
 
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Events' })
+  eventId: string;
+
   @Prop({ required: true })
   rewardId: string;
 

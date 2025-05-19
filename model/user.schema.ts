@@ -16,6 +16,12 @@ export class Users {
   })
   roles: string;
 
+  @Prop({ default: 0, required: true })
+  exp: number;
+
+  @Prop({ default: 0, required: true })
+  point: number;
+
   @Prop()
   refreshToken: string;
 }

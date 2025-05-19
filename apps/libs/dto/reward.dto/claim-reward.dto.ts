@@ -6,4 +6,9 @@ export class ClaimRewardRequestDto {
   @IsNotEmpty()
   @IsString()
   readonly rewardId!: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  readonly eventId!: string;
 }

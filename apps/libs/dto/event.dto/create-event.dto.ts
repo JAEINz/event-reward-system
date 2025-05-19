@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EventStatus } from 'apps/gateway/libs/enum/event.enum';
+import { EventStatus } from 'apps/libs/enum/event.enum';
 import { IsDateString, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateEventRequestDto {

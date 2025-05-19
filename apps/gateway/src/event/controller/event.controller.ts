@@ -21,7 +21,7 @@ import {
   CreateEventRequestDto,
   GetAllEventListRequestDto,
   GetAllEventListResponseDto,
-} from '../dto';
+} from '../../../../libs/dto/event.dto';
 import { Request } from 'express';
 import { JwtUserPayload } from 'apps/gateway/libs/dto';
 import { forwardHttpRequest } from 'apps/gateway/libs/util/http-service-wrapper';

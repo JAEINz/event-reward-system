@@ -7,7 +7,7 @@ import {
   ConditionType,
   RewardType,
   UserRewardRequestHistoryStatus,
-} from 'apps/gateway/libs/enum';
+} from 'apps/libs/enum';
 import { InjectModel } from '@nestjs/mongoose';
 import { Rewards, RewardsDocument } from 'model/reward.schema';
 import { Model } from 'mongoose';
@@ -16,15 +16,12 @@ import {
   UserRewardRequestHistoryDocument,
 } from 'model/user-reward-request-history.schema';
 import {
-  UserCharacters,
-  UserCharactersDocument,
-} from 'model/user-character.schema';
-import {
   UserFriendInvitations,
   UserFriendInvitationsDocument,
 } from 'model/user-friend-invitation.schema';
 import { UserItems, UserItemsDocument } from 'model/user-item.schema';
 import { UserCoupons, UserCouponsDocument } from 'model/user-coupon.schema';
+import { Users, UsersDocument } from 'model/user.schema';
 
 @Injectable()
 export class RewardRepository {
@@ -33,8 +30,8 @@ export class RewardRepository {
     private readonly rewardModel: Model<RewardsDocument>,
     @InjectModel(UserRewardRequestHistory.name)
     private readonly userRewardRequestHistoryModel: Model<UserRewardRequestHistoryDocument>,
-    @InjectModel(UserCharacters.name)
-    private readonly userCharacterModel: Model<UserCharactersDocument>,
+    @InjectModel(Users.name)
+    private readonly userModel: Model<UsersDocument>,
     @InjectModel(UserFriendInvitations.name)
     private readonly userFriendInvitationsModel: Model<UserFriendInvitationsDocument>,
     @InjectModel(UserItems.name)
@@ -59,7 +56,11 @@ export class RewardRepository {
     });
   }
 
-  async validateUserRewardRequestHistory(userId: string, rewardId: string) {
+  async validateUserRewardRequestHistory(
+    userId: string,
+    rewardId: string,
+    eventId: string,
+  ) {
     const userRewardRequestHistory =
       await this.userRewardRequestHistoryModel.findOne({
         userId,
@@ -71,6 +72,7 @@ export class RewardRepository {
       await this.createUserRewardHistory(
         userId,
         rewardId,
+        eventId,
         UserRewardRequestHistoryStatus.FAILED,
       );
       throw new ConflictException('이미 수령된 리워드입니다.');
@@ -87,22 +89,14 @@ export class RewardRepository {
     return reward;
   }
 
-  async validateUserId(userId: string) {
-    const user = await this.userCharacterModel.findOne({ userId });
+  async getUserCharacterExpByUserId(userId: string) {
+    const user = await this.userModel.findById(userId);
 
     if (!user) {
       throw new NotFoundException('존재하지 않는 유저입니다.');
     }
-  }
 
-  async getUserCharacterExpByUserId(userId: string) {
-    const userCharacter = await this.userCharacterModel.findOne({ userId });
-
-    if (!userCharacter) {
-      throw new NotFoundException('존재하지 않는 유저입니다.');
-    }
-
-    return { exp: userCharacter.exp };
+    return { exp: user.exp };
   }
 
   getUserFriendInvitationCount(userId: string) {
@@ -110,8 +104,8 @@ export class RewardRepository {
   }
 
   async updateUserPoint(userId: string, quantity: number) {
-    await this.userCharacterModel.updateOne(
-      { userId },
+    await this.userModel.updateOne(
+      { _id: userId },
       { $inc: { point: quantity } },
     );
   }
@@ -137,12 +131,33 @@ export class RewardRepository {
   async createUserRewardHistory(
     userId: string,
     rewardId: string,
+    eventId: string,
     status: UserRewardRequestHistoryStatus,
   ) {
     await this.userRewardRequestHistoryModel.create({
       userId,
       rewardId,
+      eventId,
       status,
     });
+  }
+
+  async getAllRewardRequestHistoryList(page: number, pageSize: number) {
+    const skip = (page - 1) * pageSize;
+
+    const [rewardList, totalCount] = await Promise.all([
+      this.userRewardRequestHistoryModel
+        .find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(pageSize)
+        .populate('userId', 'email')
+        .populate('eventId', 'title')
+        .exec(),
+      this.userRewardRequestHistoryModel.countDocuments().exec(),
+    ]);
+    console.log(rewardList);
+
+    return { rewardList, totalCount };
   }
 }

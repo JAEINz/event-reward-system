@@ -7,9 +7,9 @@ import {
   ConditionType,
   RewardType,
   UserRewardRequestHistoryStatus,
-} from 'apps/gateway/libs/enum';
+} from 'apps/libs/enum';
 import { RewardRepository } from '../repository/reward.repository';
-import { CouponTable, ItemTable } from 'apps/constants';
+import { ItemTable, CouponTable } from 'constants-data';
 
 @Injectable()
 export class RewardService {
@@ -31,10 +31,11 @@ export class RewardService {
     );
   }
 
-  async claimReward(userId: string, rewardId: string) {
+  async claimReward(userId: string, rewardId: string, eventId: string) {
     await this.rewardRepository.validateUserRewardRequestHistory(
       userId,
       rewardId,
+      eventId,
     );
 
     const { conditionType, targetCount, rewardType, data } =
@@ -47,6 +48,7 @@ export class RewardService {
         await this.rewardRepository.createUserRewardHistory(
           userId,
           rewardId,
+          eventId,
           UserRewardRequestHistoryStatus.FAILED,
         );
         throw new BadRequestException('조건을 만족하지 못했습니다.');
@@ -60,6 +62,7 @@ export class RewardService {
         await this.rewardRepository.createUserRewardHistory(
           userId,
           rewardId,
+          eventId,
           UserRewardRequestHistoryStatus.FAILED,
         );
         throw new BadRequestException('조건을 만족하지 못했습니다.');
@@ -89,6 +92,7 @@ export class RewardService {
         await this.rewardRepository.createUserRewardHistory(
           userId,
           rewardId,
+          eventId,
           UserRewardRequestHistoryStatus.FAILED,
         );
         throw new BadRequestException('불명확한 리워드 타입입니다.');
@@ -97,6 +101,7 @@ export class RewardService {
     await this.rewardRepository.createUserRewardHistory(
       userId,
       rewardId,
+      eventId,
       UserRewardRequestHistoryStatus.SUCCESS,
     );
   }
@@ -113,5 +118,15 @@ export class RewardService {
     if (!exists) {
       throw new NotFoundException('존재하지 않는 아이템입니다.');
     }
+  }
+
+  async getAllRewardRequestHistoryList(page: number, pageSize: number) {
+    const { rewardList, totalCount } =
+      await this.rewardRepository.getAllRewardRequestHistoryList(
+        page,
+        pageSize,
+      );
+
+    return { rewardList, totalCount };
   }
 }
