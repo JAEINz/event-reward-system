@@ -8,8 +8,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
-import { AxiosResponse } from 'axios';
 import { Roles } from 'apps/gateway/libs/auth/decorator/roles.decorator';
 import { JwtAuthGuard } from 'apps/gateway/libs/auth/guard/jwt-auth.guard';
 import { RolesGuard } from 'apps/gateway/libs/auth/guard/roles.guard';
@@ -24,9 +22,9 @@ import {
   GetAllEventListRequestDto,
   GetAllEventListResponseDto,
 } from '../dto';
-import { EventTable } from '../dto/type';
 import { Request } from 'express';
 import { JwtUserPayload } from 'apps/gateway/libs/dto';
+import { forwardHttpRequest } from 'apps/gateway/libs/util/http-service-wrapper';
 
 @Controller('event')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -45,10 +43,8 @@ export class EventController {
     const observable = this.httpService.get(
       `http://localhost:3002/event/list/all?page=${page}&pageSize=${pageSize}`,
     );
-    const response: AxiosResponse<{
-      eventList: EventTable[];
-      totalCount: number;
-    }> = await firstValueFrom(observable);
+
+    const response = await forwardHttpRequest(observable);
 
     return GetAllEventListResponseDto.of(
       response.data.eventList,
@@ -68,11 +64,15 @@ export class EventController {
     @Body() requestDto: CreateEventRequestDto,
   ) {
     const { userId } = req.user as JwtUserPayload;
-    await firstValueFrom(
-      this.httpService.post(`http://localhost:3002/event`, requestDto, {
+    const observable = this.httpService.post(
+      `http://localhost:3002/event`,
+      requestDto,
+      {
         headers: { 'user-id': userId },
-      }),
+      },
     );
+
+    await forwardHttpRequest(observable);
 
     return { status: 'OK' };
   }

@@ -12,9 +12,9 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { AddRewardRequestDto, ClaimRewardRequestDto } from '../dto';
-import { firstValueFrom } from 'rxjs';
 import { JwtUserPayload } from 'apps/gateway/libs/dto';
 import { Request } from 'express';
+import { forwardHttpRequest } from 'apps/gateway/libs/util/http-service-wrapper';
 
 @Controller('reward')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -29,9 +29,12 @@ export class RewardController {
   })
   @ApiCreatedResponse({ type: String })
   async addReward(@Body() requestDto: AddRewardRequestDto) {
-    await firstValueFrom(
-      this.httpService.post(`http://localhost:3002/reward`, requestDto),
+    const observable = this.httpService.post(
+      `http://localhost:3002/reward`,
+      requestDto,
     );
+
+    await forwardHttpRequest(observable);
 
     return { status: 'OK' };
   }
@@ -53,11 +56,14 @@ export class RewardController {
     @Body() requestDto: ClaimRewardRequestDto,
   ) {
     const { userId } = req.user as JwtUserPayload;
-    await firstValueFrom(
-      this.httpService.post(`http://localhost:3002/reward/claim`, requestDto, {
-        headers: { 'user-id': userId },
-      }),
+
+    const observable = this.httpService.post(
+      `http://localhost:3002/reward/claim`,
+      requestDto,
+      { headers: { 'user-id': userId } },
     );
+
+    await forwardHttpRequest(observable);
 
     return { status: 'OK' };
   }

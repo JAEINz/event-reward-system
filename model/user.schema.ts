@@ -9,6 +9,7 @@ export class Users {
   password: string;
 
   @Prop({
+    required: true,
     type: String,
     enum: ['USER', 'OPERATOR', 'AUDITOR', 'ADMIN'],
     default: 'USER',
