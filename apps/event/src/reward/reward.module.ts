@@ -17,6 +17,7 @@ import {
   UserRewardRequestHistorySchema,
 } from 'model/user-reward-request-history.schema';
 import { Users, UserSchema } from 'model/user.schema';
+import { Events, EventSchema } from 'model/event.schema';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { Users, UserSchema } from 'model/user.schema';
       { name: UserCoupons.name, schema: UserCouponSchema },
     ]),
     MongooseModule.forFeature([{ name: Users.name, schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: Events.name, schema: EventSchema }]),
   ],
   controllers: [RewardController],
   providers: [RewardService, RewardRepository],

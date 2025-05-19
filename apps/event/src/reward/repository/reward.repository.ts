@@ -56,7 +56,11 @@ export class RewardRepository {
     });
   }
 
-  async validateUserRewardRequestHistory(userId: string, rewardId: string) {
+  async validateUserRewardRequestHistory(
+    userId: string,
+    rewardId: string,
+    eventId: string,
+  ) {
     const userRewardRequestHistory =
       await this.userRewardRequestHistoryModel.findOne({
         userId,
@@ -68,6 +72,7 @@ export class RewardRepository {
       await this.createUserRewardHistory(
         userId,
         rewardId,
+        eventId,
         UserRewardRequestHistoryStatus.FAILED,
       );
       throw new ConflictException('이미 수령된 리워드입니다.');
@@ -126,12 +131,33 @@ export class RewardRepository {
   async createUserRewardHistory(
     userId: string,
     rewardId: string,
+    eventId: string,
     status: UserRewardRequestHistoryStatus,
   ) {
     await this.userRewardRequestHistoryModel.create({
       userId,
       rewardId,
+      eventId,
       status,
     });
+  }
+
+  async getAllRewardRequestHistoryList(page: number, pageSize: number) {
+    const skip = (page - 1) * pageSize;
+
+    const [rewardList, totalCount] = await Promise.all([
+      this.userRewardRequestHistoryModel
+        .find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(pageSize)
+        .populate('userId', 'email')
+        .populate('eventId', 'title')
+        .exec(),
+      this.userRewardRequestHistoryModel.countDocuments().exec(),
+    ]);
+    console.log(rewardList);
+
+    return { rewardList, totalCount };
   }
 }

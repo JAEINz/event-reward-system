@@ -1,8 +1,9 @@
-import { Body, Controller, Post, Headers } from '@nestjs/common';
+import { Body, Controller, Post, Headers, Get, Query } from '@nestjs/common';
 import { RewardService } from '../service/reward.service';
 import {
   AddRewardRequestDto,
   ClaimRewardRequestDto,
+  GetAllRewardRequestHistoryListListRequestDto,
 } from 'apps/libs/dto/reward.dto';
 
 @Controller('reward')
@@ -28,8 +29,19 @@ export class RewardController {
     @Headers('user-id') userId: string,
     @Body() requestDto: ClaimRewardRequestDto,
   ) {
-    const { rewardId } = requestDto;
+    const { rewardId, eventId } = requestDto;
 
-    await this.rewardService.claimReward(userId, rewardId);
+    await this.rewardService.claimReward(userId, rewardId, eventId);
+  }
+
+  @Get('list/all')
+  async getAllRewardRequestHistoryList(
+    @Query() requestDto: GetAllRewardRequestHistoryListListRequestDto,
+  ) {
+    const { page, pageSize } = requestDto;
+    const { rewardList, totalCount } =
+      await this.rewardService.getAllRewardRequestHistoryList(page, pageSize);
+
+    return { rewardList, totalCount };
   }
 }
