@@ -41,6 +41,17 @@ export class RewardController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: '[관리자, 운영자] 이벤트 보상 등록 API',
+    description: `
+      테스트용 아이템/쿠폰 목록:
+
+      - 아이템 ID: 682afef81ddb3041864f1514
+      - 아이템 ID: 682afef81ddb3041864f1518
+
+      - 쿠폰 ID: 682ac06a00ba6bde16cf2b86
+      - 쿠폰 ID: 682afef81ddb3041864f1515
+
+      요청 Body의 **data.id** 필드에 위 ID 중 하나를 입력해 주세요.
+        `,
   })
   @ApiCreatedResponse({ type: String })
   async addReward(@Body() requestDto: AddRewardRequestDto) {
