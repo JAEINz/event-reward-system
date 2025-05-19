@@ -8,11 +8,13 @@ import { EventModule } from './event/event.module';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import { RewardModule } from './reward/reward.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
     EventModule,
     RewardModule,
+    UserModule,
     PassportModule,
     HttpModule,
     JwtModule.register({}),

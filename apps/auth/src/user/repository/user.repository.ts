@@ -1,0 +1,28 @@
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Users, UsersDocument } from '../../../../../model/user.schema';
+import { UserRoleType } from 'apps/gateway/libs/enum/user.enum';
+
+@Injectable()
+export class UserRepository {
+  constructor(
+    @InjectModel(Users.name) private readonly userModel: Model<UsersDocument>,
+  ) {}
+
+  async validateEmail(email: string) {
+    const user = await this.userModel.findOne({ email });
+
+    if (user) {
+      throw new ForbiddenException('이미 가입된 email 입니다.');
+    }
+  }
+
+  createUser(email: string, hashPassword: string, role: UserRoleType) {
+    return this.userModel.create({
+      email,
+      password: hashPassword,
+      role,
+    });
+  }
+}
