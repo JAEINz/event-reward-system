@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Events, EventDocument } from '../../../../../model/event.schema';
+import { EventStatus } from 'apps/gateway/libs/enum/event.enum';
 
 @Injectable()
 export class EventRepository {
@@ -21,8 +22,27 @@ export class EventRepository {
         .exec(),
       this.eventModel.countDocuments({ status: { $ne: 'DELETED' } }).exec(),
     ]);
-    console.log(eventList);
 
     return { eventList, totalCount };
+  }
+
+  createEvent(
+    userId: string,
+    title: string,
+    status: EventStatus,
+    conditionType: string,
+    conditionQuantity: number,
+    startDate: string,
+    endDate: string,
+  ) {
+    return this.eventModel.create({
+      userId,
+      title,
+      status,
+      conditionType,
+      conditionQuantity,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+    });
   }
 }

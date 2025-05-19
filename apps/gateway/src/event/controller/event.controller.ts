@@ -1,4 +1,12 @@
-import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { AxiosResponse } from 'axios';
@@ -6,11 +14,19 @@ import { Roles } from 'apps/gateway/libs/auth/decorator/roles.decorator';
 import { JwtAuthGuard } from 'apps/gateway/libs/auth/guard/jwt-auth.guard';
 import { RolesGuard } from 'apps/gateway/libs/auth/guard/roles.guard';
 import {
-  GetAllEventListGetResponseDto,
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
+import {
+  CreateEventRequestDto,
   GetAllEventListRequestDto,
-} from 'apps/gateway/libs/shared/dto/event';
-import { EventTable } from 'apps/gateway/libs/shared/dto/event/type';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+  GetAllEventListResponseDto,
+} from '../dto';
+import { EventTable } from '../dto/type';
+import { Request } from 'express';
+import { JwtUserPayload } from 'apps/gateway/libs/dto';
 
 @Controller('event')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -21,9 +37,9 @@ export class EventController {
   @Roles('OPERATOR', 'ADMIN')
   @ApiBearerAuth()
   @ApiOperation({
-    summary: '[관리자] 이벤트 전체 리스트 조회 API',
+    summary: '[관리자, 운영자] 이벤트 전체 리스트 조회 API',
   })
-  @ApiOkResponse({ type: GetAllEventListGetResponseDto })
+  @ApiOkResponse({ type: GetAllEventListResponseDto })
   async getEventList(@Query() requestDto: GetAllEventListRequestDto) {
     const { page, pageSize } = requestDto;
     const observable = this.httpService.get(
@@ -34,9 +50,25 @@ export class EventController {
       totalCount: number;
     }> = await firstValueFrom(observable);
 
-    return GetAllEventListGetResponseDto.of(
+    return GetAllEventListResponseDto.of(
       response.data.eventList,
       response.data.totalCount,
     );
+  }
+
+  @Post()
+  @Roles('OPERATOR', 'ADMIN')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: '[관리자, 운영자] 이벤트 생성 API',
+  })
+  @ApiCreatedResponse({ type: String })
+  createEvent(@Req() req: Request, @Body() requestDto: CreateEventRequestDto) {
+    const { userId } = req.user as JwtUserPayload;
+    this.httpService.post(`http://localhost:3002/event`, requestDto, {
+      headers: { 'user-id': userId },
+    });
+
+    return { status: 'OK' };
   }
 }

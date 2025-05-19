@@ -1,6 +1,9 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { GetAllEventListRequestDto } from 'apps/gateway/libs/shared/dto/event';
+import { Body, Controller, Get, Post, Query, Headers } from '@nestjs/common';
 import { EventService } from '../service/event.service';
+import {
+  CreateEventRequestDto,
+  GetAllEventListRequestDto,
+} from 'apps/gateway/src/event/dto';
 
 @Controller('event')
 export class EventController {
@@ -15,5 +18,30 @@ export class EventController {
     );
 
     return { eventList, totalCount };
+  }
+
+  @Post()
+  createEvent(
+    @Headers('user-id') userId: string,
+    @Body() requestDto: CreateEventRequestDto,
+  ) {
+    const {
+      title,
+      status,
+      conditionType,
+      conditionQuantity,
+      startDate,
+      endDate,
+    } = requestDto;
+
+    return this.eventService.createEvent(
+      userId,
+      title,
+      status,
+      conditionType,
+      conditionQuantity,
+      startDate,
+      endDate,
+    );
   }
 }
