@@ -8,14 +8,12 @@ export class UserCharacters {
   @Prop({ required: true })
   nickname: string;
 
-  @Prop({ default: 0 })
+  @Prop({ default: 0, required: true })
   exp: number;
 
-  @Prop({ default: 0 })
+  @Prop({ default: 0, required: true })
   point: number;
-
-  @Prop({ enum: ['ACTIVE', 'SUSPENDED', 'DELETED'], default: 'ACTIVE' })
-  status: string;
 }
 
 export const UserCharacterSchema = SchemaFactory.createForClass(UserCharacters);
+export type UserCharactersDocument = UserCharacters & Document;

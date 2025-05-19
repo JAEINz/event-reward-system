@@ -17,4 +17,4 @@ export class UserCoupons {
 }
 
 export const UserCouponSchema = SchemaFactory.createForClass(UserCoupons);
-export type UserCouponDocument = UserCoupons & Document;
+export type UserCouponsDocument = UserCoupons & Document;

@@ -1,14 +1,46 @@
-import { Injectable } from '@nestjs/common';
-import { ConditionType, RewardType } from 'apps/gateway/libs/enum';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import {
+  ConditionType,
+  RewardType,
+  UserRewardRequestHistoryStatus,
+} from 'apps/gateway/libs/enum';
 import { InjectModel } from '@nestjs/mongoose';
 import { Rewards, RewardsDocument } from 'model/reward.schema';
 import { Model } from 'mongoose';
+import {
+  UserRewardRequestHistory,
+  UserRewardRequestHistoryDocument,
+} from 'model/user-reward-request-history.schema';
+import {
+  UserCharacters,
+  UserCharactersDocument,
+} from 'model/user-character.schema';
+import {
+  UserFriendInvitations,
+  UserFriendInvitationsDocument,
+} from 'model/user-friend-invitation.schema';
+import { UserItems, UserItemsDocument } from 'model/user-item.schema';
+import { UserCoupons, UserCouponsDocument } from 'model/user-coupon.schema';
 
 @Injectable()
 export class RewardRepository {
   constructor(
     @InjectModel(Rewards.name)
     private readonly rewardModel: Model<RewardsDocument>,
+    @InjectModel(UserRewardRequestHistory.name)
+    private readonly userRewardRequestHistoryModel: Model<UserRewardRequestHistoryDocument>,
+    @InjectModel(UserCharacters.name)
+    private readonly userCharacterModel: Model<UserCharactersDocument>,
+    @InjectModel(UserFriendInvitations.name)
+    private readonly userFriendInvitationsModel: Model<UserFriendInvitationsDocument>,
+    @InjectModel(UserItems.name)
+    private readonly userItemsModel: Model<UserItemsDocument>,
+    @InjectModel(UserCoupons.name)
+    private readonly userCouponsModel: Model<UserCouponsDocument>,
   ) {}
 
   addReward(
@@ -24,6 +56,93 @@ export class RewardRepository {
       targetCount,
       rewardType,
       data,
+    });
+  }
+
+  async validateUserRewardRequestHistory(userId: string, rewardId: string) {
+    const userRewardRequestHistory =
+      await this.userRewardRequestHistoryModel.findOne({
+        userId,
+        rewardId,
+        status: UserRewardRequestHistoryStatus.SUCCESS,
+      });
+
+    if (userRewardRequestHistory) {
+      await this.createUserRewardHistory(
+        userId,
+        rewardId,
+        UserRewardRequestHistoryStatus.FAILED,
+      );
+      throw new ConflictException('이미 수령된 리워드입니다.');
+    }
+  }
+
+  async getRewardByRewardId(rewardId: string) {
+    const reward = await this.rewardModel.findById(rewardId);
+
+    if (!reward) {
+      throw new NotFoundException('존재하지 않는 리워드 입니다.');
+    }
+
+    return reward;
+  }
+
+  async validateUserId(userId: string) {
+    const user = await this.userCharacterModel.findOne({ userId });
+
+    if (!user) {
+      throw new NotFoundException('존재하지 않는 유저입니다.');
+    }
+  }
+
+  async getUserCharacterExpByUserId(userId: string) {
+    const userCharacter = await this.userCharacterModel.findOne({ userId });
+
+    if (!userCharacter) {
+      throw new NotFoundException('존재하지 않는 유저입니다.');
+    }
+
+    return { exp: userCharacter.exp };
+  }
+
+  getUserFriendInvitationCount(userId: string) {
+    return this.userFriendInvitationsModel.countDocuments({ userId });
+  }
+
+  async updateUserPoint(userId: string, quantity: number) {
+    await this.userCharacterModel.updateOne(
+      { userId },
+      { $inc: { point: quantity } },
+    );
+  }
+
+  async addUserItem(userId: string, itemId: string, quantity: number) {
+    const itemsToCreate = Array.from({ length: quantity }, () => ({
+      userId,
+      itemId,
+    }));
+
+    await this.userItemsModel.insertMany(itemsToCreate);
+  }
+
+  async addUserCoupon(userId: string, couponId: string, quantity: number) {
+    const couponsToCreate = Array.from({ length: quantity }, () => ({
+      userId,
+      couponId,
+    }));
+
+    await this.userCouponsModel.insertMany(couponsToCreate);
+  }
+
+  async createUserRewardHistory(
+    userId: string,
+    rewardId: string,
+    status: UserRewardRequestHistoryStatus,
+  ) {
+    await this.userRewardRequestHistoryModel.create({
+      userId,
+      rewardId,
+      status,
     });
   }
 }
