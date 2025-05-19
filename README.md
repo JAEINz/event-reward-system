@@ -17,8 +17,6 @@ docker compose up --build
 ```
 
 ### 3. 서비스 목록 및 접속 경로
-MongoDB: mongodb://localhost:27017
-
 API Gateway: http://localhost:3000
 
 Auth Service: http://localhost:3001
