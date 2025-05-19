@@ -8,12 +8,27 @@ constants-data # 쿠폰/아이템 상수 데이터
 model # 공통 Mongoose 스키마  
 
 ## ✅ 실행 방법
+### 1. 환경 변수 설정
+레포지토리에 포함된 **`.env` 파일**을 그대로 사용하시면 됩니다.
+
+### 2. Docker Compose 실행
 ```bash
-npm install
-npm run auth:start
-npm run event:start
-npm run gateway:start
+docker compose up --build
 ```
+
+### 3. 서비스 목록 및 접속 경로
+MongoDB: mongodb://localhost:27017
+
+API Gateway: http://localhost:3000
+
+Auth Service: http://localhost:3001
+
+Event Service: http://localhost:3002
+
+Swagger 문서: http://localhost:3000/swagger
+
+MongoDB는 컨테이너로 자동 실행됩니다.
+
 
 ## ✅ API 문서 (Swagger)
 **http://localhost:3000/swagger**
