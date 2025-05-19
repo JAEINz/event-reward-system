@@ -6,7 +6,7 @@ export type RewardsDocument = Rewards & Document;
 
 type RewardData = {
   id: string;
-  targetQuantity: number;
+  quantity: number;
 };
 
 @Schema({ timestamps: true })
@@ -30,7 +30,7 @@ export class Rewards {
     required: true,
     type: {
       id: String,
-      targetQuantity: Number,
+      quantity: Number,
     },
   })
   data: RewardData;

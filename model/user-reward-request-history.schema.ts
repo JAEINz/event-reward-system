@@ -1,17 +1,20 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
 
 @Schema({ timestamps: true })
 export class UserRewardRequestHistory {
-  @Prop({ required: true })
-  characterId: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true })
+  userId: string;
 
   @Prop({ required: true })
-  eventId: string;
+  rewardId: string;
 
   @Prop({ enum: ['FAILED', 'SUCCESS'], required: true })
   status: string;
 }
 
-export const UserRewardRequestSchema = SchemaFactory.createForClass(
+export const UserRewardRequestHistorySchema = SchemaFactory.createForClass(
   UserRewardRequestHistory,
 );
+export type UserRewardRequestHistoryDocument = UserRewardRequestHistory &
+  Document;

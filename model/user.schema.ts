@@ -15,11 +15,9 @@ export class Users {
   })
   roles: string;
 
-  @Prop({ enum: ['ACTIVE', 'SUSPENDED', 'DELETED'], default: 'ACTIVE' })
-  status: string;
-
   @Prop()
   refreshToken: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(Users);
+export type UsersDocument = Users & Document;

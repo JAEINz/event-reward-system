@@ -11,4 +11,4 @@ export class UserItems {
 }
 
 export const UserItemSchema = SchemaFactory.createForClass(UserItems);
-export type UserItemDocument = UserItems & Document;
+export type UserItemsDocument = UserItems & Document;
