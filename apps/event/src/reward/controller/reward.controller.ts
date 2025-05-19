@@ -15,13 +15,15 @@ export class RewardController {
     const { eventId, conditionType, targetCount, rewardType, data } =
       requestDto;
 
-    await this.rewardService.addReward(
+    const reward = await this.rewardService.addReward(
       eventId,
       conditionType,
       targetCount,
       rewardType,
       data,
     );
+
+    return { reward };
   }
 
   @Post('/claim')

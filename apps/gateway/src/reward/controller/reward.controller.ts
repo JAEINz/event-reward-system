@@ -22,6 +22,7 @@ import {
 } from '@nestjs/swagger';
 import {
   AddRewardRequestDto,
+  AddRewardResponseDto,
   ClaimRewardRequestDto,
   GetAllRewardRequestHistoryListListRequestDto,
   GetAllRewardRequestHistoryListListResponseDto,
@@ -48,9 +49,9 @@ export class RewardController {
       requestDto,
     );
 
-    await forwardHttpRequest(observable);
+    const response = await forwardHttpRequest(observable);
 
-    return { status: 'OK' };
+    return new AddRewardResponseDto(response.data.reward._id);
   }
 
   @Post('/claim')

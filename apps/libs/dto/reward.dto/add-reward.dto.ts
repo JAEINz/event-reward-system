@@ -50,3 +50,12 @@ export class AddRewardRequestDto {
   @IsNotEmpty()
   readonly data!: RewardDataRequestDto;
 }
+
+export class AddRewardResponseDto {
+  @ApiProperty()
+  readonly rewardId: string;
+
+  constructor(rewardId: string) {
+    this.rewardId = rewardId;
+  }
+}
