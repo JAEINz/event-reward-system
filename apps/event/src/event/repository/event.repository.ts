@@ -30,8 +30,6 @@ export class EventRepository {
     userId: string,
     title: string,
     status: EventStatus,
-    conditionType: string,
-    conditionQuantity: number,
     startDate: string,
     endDate: string,
   ) {
@@ -39,8 +37,6 @@ export class EventRepository {
       userId,
       title,
       status,
-      conditionType,
-      conditionQuantity,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
     });

@@ -1,13 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EventStatus } from 'apps/gateway/libs/enum/event.enum';
-import { Type } from 'class-transformer';
-import {
-  IsDateString,
-  IsEnum,
-  IsInt,
-  IsNotEmpty,
-  IsString,
-} from 'class-validator';
+import { IsDateString, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateEventRequestDto {
   @ApiProperty()
@@ -19,17 +12,6 @@ export class CreateEventRequestDto {
   @IsNotEmpty()
   @IsEnum(EventStatus)
   readonly status!: EventStatus;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  readonly conditionType!: string;
-
-  @ApiProperty({ required: false })
-  @IsNotEmpty()
-  @Type(() => Number)
-  @IsInt()
-  readonly conditionQuantity!: number;
 
   @ApiProperty({ type: Date })
   @IsNotEmpty()
