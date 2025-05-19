@@ -129,4 +129,19 @@ export class RewardService {
 
     return { rewardList, totalCount };
   }
+
+  async getUserRewardRequestHistoryList(
+    userId: string,
+    page: number,
+    pageSize: number,
+  ) {
+    const { rewardList, totalCount } =
+      await this.rewardRepository.getUserRewardRequestHistoryList(
+        userId,
+        page,
+        pageSize,
+      );
+
+    return { rewardList, totalCount };
+  }
 }

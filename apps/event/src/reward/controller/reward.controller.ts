@@ -4,6 +4,7 @@ import {
   AddRewardRequestDto,
   ClaimRewardRequestDto,
   GetAllRewardRequestHistoryListListRequestDto,
+  GetUserRewardRequestHistoryListListRequestDto,
 } from 'apps/libs/dto/reward.dto';
 
 @Controller('reward')
@@ -43,6 +44,22 @@ export class RewardController {
     const { page, pageSize } = requestDto;
     const { rewardList, totalCount } =
       await this.rewardService.getAllRewardRequestHistoryList(page, pageSize);
+
+    return { rewardList, totalCount };
+  }
+
+  @Get('list/user')
+  async getUserRewardRequestHistoryList(
+    @Headers('user-id') userId: string,
+    @Query() requestDto: GetUserRewardRequestHistoryListListRequestDto,
+  ) {
+    const { page, pageSize } = requestDto;
+    const { rewardList, totalCount } =
+      await this.rewardService.getUserRewardRequestHistoryList(
+        userId,
+        page,
+        pageSize,
+      );
 
     return { rewardList, totalCount };
   }

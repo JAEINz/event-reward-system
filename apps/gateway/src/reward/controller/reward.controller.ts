@@ -26,6 +26,8 @@ import {
   ClaimRewardRequestDto,
   GetAllRewardRequestHistoryListListRequestDto,
   GetAllRewardRequestHistoryListListResponseDto,
+  GetUserRewardRequestHistoryListListRequestDto,
+  GetUserRewardRequestHistoryListListResponseDto,
 } from '../../../../libs/dto/reward.dto';
 import { JwtUserPayload } from 'apps/gateway/libs/dto';
 import { Request } from 'express';
@@ -66,10 +68,10 @@ export class RewardController {
   }
 
   @Post('/claim')
-  @Roles('USER')
+  @Roles('USER', 'ADMIN')
   @ApiBearerAuth()
   @ApiOperation({
-    summary: '[유저] 이벤트 보상 요청 API',
+    summary: '[유저, 운영자] 이벤트 보상 요청 API',
   })
   @ApiConflictResponse({ description: '이미 수령된 리워드입니다.' })
   @ApiNotFoundResponse({
@@ -101,7 +103,7 @@ export class RewardController {
     summary: '[감사자, 운영자] 보상 요청 전체 리스트 조회 API',
   })
   @ApiOkResponse({ type: GetAllRewardRequestHistoryListListResponseDto })
-  async getEventList(
+  async getRewardList(
     @Query() requestDto: GetAllRewardRequestHistoryListListRequestDto,
   ) {
     const { page, pageSize } = requestDto;
@@ -112,6 +114,32 @@ export class RewardController {
     const response = await forwardHttpRequest(observable);
 
     return GetAllRewardRequestHistoryListListResponseDto.of(
+      response.data.rewardList,
+      response.data.totalCount,
+    );
+  }
+
+  @Get('list/user')
+  @Roles('USER', 'ADMIN')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: '[유저, 운영자] 유저 보상 요청 리스트 조회 API',
+  })
+  @ApiOkResponse({ type: GetUserRewardRequestHistoryListListResponseDto })
+  async getUserRewardList(
+    @Req() req: Request,
+    @Query() requestDto: GetUserRewardRequestHistoryListListRequestDto,
+  ) {
+    const { page, pageSize } = requestDto;
+    const { userId } = req.user as JwtUserPayload;
+    const observable = this.httpService.get(
+      `http://localhost:3002/reward/list/all?page=${page}&pageSize=${pageSize}`,
+      { headers: { 'user-id': userId } },
+    );
+
+    const response = await forwardHttpRequest(observable);
+
+    return GetUserRewardRequestHistoryListListResponseDto.of(
       response.data.rewardList,
       response.data.totalCount,
     );
