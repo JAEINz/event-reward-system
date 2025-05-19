@@ -10,7 +10,7 @@ import {
 } from 'apps/libs/enum';
 import { InjectModel } from '@nestjs/mongoose';
 import { Rewards, RewardsDocument } from 'model/reward.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import {
   UserRewardRequestHistory,
   UserRewardRequestHistoryDocument,
@@ -156,7 +156,28 @@ export class RewardRepository {
         .exec(),
       this.userRewardRequestHistoryModel.countDocuments().exec(),
     ]);
-    console.log(rewardList);
+
+    return { rewardList, totalCount };
+  }
+
+  async getUserRewardRequestHistoryList(
+    userId: string,
+    page: number,
+    pageSize: number,
+  ) {
+    const skip = (page - 1) * pageSize;
+
+    const [rewardList, totalCount] = await Promise.all([
+      this.userRewardRequestHistoryModel
+        .find({ userId: new Types.ObjectId(userId) })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(pageSize)
+        .populate('userId', 'email')
+        .populate('eventId', 'title')
+        .exec(),
+      this.userRewardRequestHistoryModel.countDocuments().exec(),
+    ]);
 
     return { rewardList, totalCount };
   }

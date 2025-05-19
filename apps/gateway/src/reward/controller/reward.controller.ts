@@ -22,9 +22,12 @@ import {
 } from '@nestjs/swagger';
 import {
   AddRewardRequestDto,
+  AddRewardResponseDto,
   ClaimRewardRequestDto,
   GetAllRewardRequestHistoryListListRequestDto,
   GetAllRewardRequestHistoryListListResponseDto,
+  GetUserRewardRequestHistoryListListRequestDto,
+  GetUserRewardRequestHistoryListListResponseDto,
 } from '../../../../libs/dto/reward.dto';
 import { JwtUserPayload } from 'apps/gateway/libs/dto';
 import { Request } from 'express';
@@ -40,6 +43,17 @@ export class RewardController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: '[관리자, 운영자] 이벤트 보상 등록 API',
+    description: `
+      테스트용 아이템/쿠폰 목록:
+
+      - 아이템 ID: 682afef81ddb3041864f1514
+      - 아이템 ID: 682afef81ddb3041864f1518
+
+      - 쿠폰 ID: 682ac06a00ba6bde16cf2b86
+      - 쿠폰 ID: 682afef81ddb3041864f1515
+
+      요청 Body의 **data.id** 필드에 위 ID 중 하나를 입력해 주세요.
+        `,
   })
   @ApiCreatedResponse({ type: String })
   async addReward(@Body() requestDto: AddRewardRequestDto) {
@@ -48,16 +62,16 @@ export class RewardController {
       requestDto,
     );
 
-    await forwardHttpRequest(observable);
+    const response = await forwardHttpRequest(observable);
 
-    return { status: 'OK' };
+    return new AddRewardResponseDto(response.data.reward._id);
   }
 
   @Post('/claim')
-  @Roles('USER')
+  @Roles('USER', 'ADMIN')
   @ApiBearerAuth()
   @ApiOperation({
-    summary: '[유저] 이벤트 보상 요청 API',
+    summary: '[유저, 운영자] 이벤트 보상 요청 API',
   })
   @ApiConflictResponse({ description: '이미 수령된 리워드입니다.' })
   @ApiNotFoundResponse({
@@ -89,7 +103,7 @@ export class RewardController {
     summary: '[감사자, 운영자] 보상 요청 전체 리스트 조회 API',
   })
   @ApiOkResponse({ type: GetAllRewardRequestHistoryListListResponseDto })
-  async getEventList(
+  async getRewardList(
     @Query() requestDto: GetAllRewardRequestHistoryListListRequestDto,
   ) {
     const { page, pageSize } = requestDto;
@@ -100,6 +114,32 @@ export class RewardController {
     const response = await forwardHttpRequest(observable);
 
     return GetAllRewardRequestHistoryListListResponseDto.of(
+      response.data.rewardList,
+      response.data.totalCount,
+    );
+  }
+
+  @Get('list/user')
+  @Roles('USER', 'ADMIN')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: '[유저, 운영자] 유저 보상 요청 리스트 조회 API',
+  })
+  @ApiOkResponse({ type: GetUserRewardRequestHistoryListListResponseDto })
+  async getUserRewardList(
+    @Req() req: Request,
+    @Query() requestDto: GetUserRewardRequestHistoryListListRequestDto,
+  ) {
+    const { page, pageSize } = requestDto;
+    const { userId } = req.user as JwtUserPayload;
+    const observable = this.httpService.get(
+      `http://localhost:3002/reward/list/all?page=${page}&pageSize=${pageSize}`,
+      { headers: { 'user-id': userId } },
+    );
+
+    const response = await forwardHttpRequest(observable);
+
+    return GetUserRewardRequestHistoryListListResponseDto.of(
       response.data.rewardList,
       response.data.totalCount,
     );
