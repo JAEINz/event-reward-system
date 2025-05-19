@@ -15,12 +15,12 @@ export class EventRepository {
 
     const [eventList, totalCount] = await Promise.all([
       this.eventModel
-        .find({ status: { $ne: 'DELETED' } })
+        .find()
         .skip(skip)
         .limit(pageSize)
         .populate('userId', 'email')
         .exec(),
-      this.eventModel.countDocuments({ status: { $ne: 'DELETED' } }).exec(),
+      this.eventModel.countDocuments().exec(),
     ]);
 
     return { eventList, totalCount };
