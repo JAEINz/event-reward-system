@@ -25,4 +25,23 @@ export class UserRepository {
       role,
     });
   }
+
+  async validateEmailGetUser(email: string) {
+    const user = await this.userModel.findOne({
+      email,
+    });
+
+    if (!user) {
+      throw new ForbiddenException('유효하지 않은 계정 정보입니다.');
+    }
+    return { user };
+  }
+
+  async updateRefreshToken(userId: string, refreshToken: string) {
+    return this.userModel.findOneAndUpdate(
+      { _id: userId },
+      { refreshToken },
+      { new: true },
+    );
+  }
 }
