@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Events, EventDocument } from '../../../../../model/event.schema';
 import { EventStatus } from 'apps/gateway/libs/enum/event.enum';
 
@@ -34,7 +34,7 @@ export class EventRepository {
     endDate: string,
   ) {
     return this.eventModel.create({
-      userId,
+      userId: new Types.ObjectId(userId),
       title,
       status,
       startDate: new Date(startDate),

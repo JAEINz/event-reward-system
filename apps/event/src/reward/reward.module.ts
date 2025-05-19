@@ -6,10 +6,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { RewardSchema } from 'model/reward.schema';
 import { Rewards } from '../../../../model/reward.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import {
-  UserCharacters,
-  UserCharacterSchema,
-} from 'model/user-character.schema';
 import { UserCoupons, UserCouponSchema } from 'model/user-coupon.schema';
 import {
   UserFriendInvitations,
@@ -20,6 +16,7 @@ import {
   UserRewardRequestHistory,
   UserRewardRequestHistorySchema,
 } from 'model/user-reward-request-history.schema';
+import { Users, UserSchema } from 'model/user.schema';
 
 @Module({
   imports: [
@@ -38,9 +35,6 @@ import {
       },
     ]),
     MongooseModule.forFeature([
-      { name: UserCharacters.name, schema: UserCharacterSchema },
-    ]),
-    MongooseModule.forFeature([
       { name: UserFriendInvitations.name, schema: UserFriendInvitationSchema },
     ]),
     MongooseModule.forFeature([
@@ -49,6 +43,7 @@ import {
     MongooseModule.forFeature([
       { name: UserCoupons.name, schema: UserCouponSchema },
     ]),
+    MongooseModule.forFeature([{ name: Users.name, schema: UserSchema }]),
   ],
   controllers: [RewardController],
   providers: [RewardService, RewardRepository],

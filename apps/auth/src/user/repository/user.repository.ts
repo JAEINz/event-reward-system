@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Users, UsersDocument } from '../../../../../model/user.schema';
 import { UserRoleType } from 'apps/gateway/libs/enum/user.enum';
 
@@ -39,7 +39,7 @@ export class UserRepository {
 
   async updateRefreshToken(userId: string, refreshToken: string) {
     return this.userModel.findOneAndUpdate(
-      { _id: userId },
+      { _id: new Types.ObjectId(userId) },
       { refreshToken },
       { new: true },
     );
