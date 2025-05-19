@@ -23,8 +23,6 @@ Auth Service: http://localhost:3001
 
 Event Service: http://localhost:3002
 
-Swagger 문서: http://localhost:3000/swagger
-
 MongoDB는 컨테이너로 자동 실행됩니다.
 
 
