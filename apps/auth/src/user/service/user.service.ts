@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { UserRepository } from '../repository/user.repository';
-import { UserRoleType } from 'apps/gateway/libs/enum/user.enum';
+import { UserRoleType } from 'apps/libs/enum/user.enum';
 import * as bcrypt from 'bcrypt';
 import { TokenService } from './token.service';
 

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Events, EventDocument } from '../../../../../model/event.schema';
-import { EventStatus } from 'apps/gateway/libs/enum/event.enum';
+import { EventStatus } from 'apps/libs/enum/event.enum';
 
 @Injectable()
 export class EventRepository {

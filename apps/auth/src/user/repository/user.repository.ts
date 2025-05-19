@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Users, UsersDocument } from '../../../../../model/user.schema';
-import { UserRoleType } from 'apps/gateway/libs/enum/user.enum';
+import { UserRoleType } from 'apps/libs/enum/user.enum';
 
 @Injectable()
 export class UserRepository {

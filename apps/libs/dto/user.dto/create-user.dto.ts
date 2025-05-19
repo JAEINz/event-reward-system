@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserRoleType } from 'apps/gateway/libs/enum';
+import { UserRoleType } from 'apps/libs/enum';
 import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateUserRequestDto {

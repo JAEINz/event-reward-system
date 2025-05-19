@@ -9,7 +9,7 @@ import {
   CreateUserRequestDto,
   LoginRequestDto,
   LoginResponseDto,
-} from '../dto';
+} from '../../../../libs/dto/user.dto';
 import { forwardHttpRequest } from 'apps/gateway/libs/util/http-service-wrapper';
 
 @Controller('user')

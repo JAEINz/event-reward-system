@@ -4,7 +4,7 @@ import {
   CreateUserRequestDto,
   LoginRequestDto,
   LoginResponseDto,
-} from 'apps/gateway/src/user/dto';
+} from 'apps/libs/dto/user.dto';
 
 @Controller('user')
 export class UserController {

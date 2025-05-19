@@ -3,7 +3,7 @@ import { RewardService } from '../service/reward.service';
 import {
   AddRewardRequestDto,
   ClaimRewardRequestDto,
-} from 'apps/gateway/src/reward/dto';
+} from 'apps/libs/dto/reward.dto';
 
 @Controller('reward')
 export class RewardController {

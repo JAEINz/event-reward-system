@@ -11,7 +11,10 @@ import {
   ApiNotFoundResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import { AddRewardRequestDto, ClaimRewardRequestDto } from '../dto';
+import {
+  AddRewardRequestDto,
+  ClaimRewardRequestDto,
+} from '../../../../libs/dto/reward.dto';
 import { JwtUserPayload } from 'apps/gateway/libs/dto';
 import { Request } from 'express';
 import { forwardHttpRequest } from 'apps/gateway/libs/util/http-service-wrapper';

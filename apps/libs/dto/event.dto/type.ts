@@ -1,4 +1,4 @@
-import { EventStatus } from 'apps/gateway/libs/enum/event.enum';
+import { EventStatus } from 'apps/libs/enum/event.enum';
 
 interface UserSummary {
   _id: string;

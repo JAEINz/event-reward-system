@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ConditionType, RewardType } from 'apps/gateway/libs/enum';
+import { ConditionType, RewardType } from 'apps/libs/enum';
 import { Type } from 'class-transformer';
 import {
   IsEnum,

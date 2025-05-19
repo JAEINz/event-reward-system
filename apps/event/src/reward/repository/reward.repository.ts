@@ -7,7 +7,7 @@ import {
   ConditionType,
   RewardType,
   UserRewardRequestHistoryStatus,
-} from 'apps/gateway/libs/enum';
+} from 'apps/libs/enum';
 import { InjectModel } from '@nestjs/mongoose';
 import { Rewards, RewardsDocument } from 'model/reward.schema';
 import { Model } from 'mongoose';

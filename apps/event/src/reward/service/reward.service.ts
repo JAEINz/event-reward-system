@@ -7,9 +7,9 @@ import {
   ConditionType,
   RewardType,
   UserRewardRequestHistoryStatus,
-} from 'apps/gateway/libs/enum';
+} from 'apps/libs/enum';
 import { RewardRepository } from '../repository/reward.repository';
-import { CouponTable, ItemTable } from 'apps/constants';
+import { ItemTable, CouponTable } from 'constants-data';
 
 @Injectable()
 export class RewardService {

@@ -3,7 +3,7 @@ import { EventService } from '../service/event.service';
 import {
   CreateEventRequestDto,
   GetAllEventListRequestDto,
-} from 'apps/gateway/src/event/dto';
+} from 'apps/libs/dto/event.dto';
 
 @Controller('event')
 export class EventController {

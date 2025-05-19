@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsInt, IsNotEmpty } from 'class-validator';
 import { EventTable } from './type';
-import { EventStatus } from 'apps/gateway/libs/enum/event.enum';
+import { EventStatus } from 'apps/libs/enum/event.enum';
 
 export class GetAllEventListRequestDto {
   @ApiProperty()

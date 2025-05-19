@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { EventRepository } from '../repository/event.repository';
-import { EventStatus } from 'apps/gateway/libs/enum/event.enum';
+import { EventStatus } from 'apps/libs/enum/event.enum';
 
 @Injectable()
 export class EventService {
