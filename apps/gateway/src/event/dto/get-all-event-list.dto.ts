@@ -61,7 +61,7 @@ class GetAllEventResponseDto {
   }
 }
 
-export class GetAllEventListGetResponseDto {
+export class GetAllEventListResponseDto {
   @ApiProperty({ type: [GetAllEventResponseDto] })
   readonly eventList: GetAllEventResponseDto[];
 
@@ -74,7 +74,7 @@ export class GetAllEventListGetResponseDto {
   }
 
   static of(eventList: EventTable[], totalCount: number) {
-    return new GetAllEventListGetResponseDto(
+    return new GetAllEventListResponseDto(
       eventList.map((event) => GetAllEventResponseDto.from(event)),
       totalCount,
     );

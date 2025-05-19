@@ -12,22 +12,19 @@ export class Events {
   @Prop()
   description: string;
 
-  @Prop()
-  imageUrl: string;
-
   @Prop({ enum: ['ACTIVE', 'SUSPENDED', 'DELETED'], default: 'ACTIVE' })
   status: string;
 
-  @Prop()
+  @Prop({ required: true })
   conditionType: string;
 
-  @Prop()
+  @Prop({ required: true })
   conditionQuantity: number;
 
-  @Prop()
+  @Prop({ required: true })
   startDate: Date;
 
-  @Prop()
+  @Prop({ required: true })
   endDate: Date;
 }
 
