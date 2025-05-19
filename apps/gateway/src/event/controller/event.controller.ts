@@ -63,11 +63,16 @@ export class EventController {
     summary: '[관리자, 운영자] 이벤트 생성 API',
   })
   @ApiCreatedResponse({ type: String })
-  createEvent(@Req() req: Request, @Body() requestDto: CreateEventRequestDto) {
+  async createEvent(
+    @Req() req: Request,
+    @Body() requestDto: CreateEventRequestDto,
+  ) {
     const { userId } = req.user as JwtUserPayload;
-    this.httpService.post(`http://localhost:3002/event`, requestDto, {
-      headers: { 'user-id': userId },
-    });
+    await firstValueFrom(
+      this.httpService.post(`http://localhost:3002/event`, requestDto, {
+        headers: { 'user-id': userId },
+      }),
+    );
 
     return { status: 'OK' };
   }

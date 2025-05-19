@@ -17,8 +17,6 @@ export class EventService {
     userId: string,
     title: string,
     status: EventStatus,
-    conditionType: string,
-    conditionQuantity: number,
     startDate: string,
     endDate: string,
   ) {
@@ -26,8 +24,6 @@ export class EventService {
       userId,
       title,
       status,
-      conditionType,
-      conditionQuantity,
       startDate,
       endDate,
     );

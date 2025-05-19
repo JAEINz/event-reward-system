@@ -8,17 +8,11 @@ export class UserCharacters {
   @Prop({ required: true })
   nickname: string;
 
-  @Prop({ required: true, default: 1 })
-  level: number;
-
-  @Prop({ required: true, default: 0 })
+  @Prop({ default: 0 })
   exp: number;
 
-  @Prop()
-  characterClass: string;
-
   @Prop({ default: 0 })
-  gold: number;
+  point: number;
 
   @Prop({ enum: ['ACTIVE', 'SUSPENDED', 'DELETED'], default: 'ACTIVE' })
   status: string;

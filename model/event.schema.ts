@@ -16,12 +16,6 @@ export class Events {
   status: string;
 
   @Prop({ required: true })
-  conditionType: string;
-
-  @Prop({ required: true })
-  conditionQuantity: number;
-
-  @Prop({ required: true })
   startDate: Date;
 
   @Prop({ required: true })

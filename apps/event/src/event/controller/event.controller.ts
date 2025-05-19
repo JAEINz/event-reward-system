@@ -25,21 +25,12 @@ export class EventController {
     @Headers('user-id') userId: string,
     @Body() requestDto: CreateEventRequestDto,
   ) {
-    const {
-      title,
-      status,
-      conditionType,
-      conditionQuantity,
-      startDate,
-      endDate,
-    } = requestDto;
+    const { title, status, startDate, endDate } = requestDto;
 
     return this.eventService.createEvent(
       userId,
       title,
       status,
-      conditionType,
-      conditionQuantity,
       startDate,
       endDate,
     );

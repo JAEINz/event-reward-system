@@ -7,10 +7,12 @@ import { RolesGuard } from '../libs/auth/guard/roles.guard';
 import { EventModule } from './event/event.module';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
+import { RewardModule } from './reward/reward.module';
 
 @Module({
   imports: [
     EventModule,
+    RewardModule,
     PassportModule,
     HttpModule,
     JwtModule.register({}),
